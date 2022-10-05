@@ -22,8 +22,8 @@ number_of_pens <- function(farms) {
 ##' environmental and the parameters specific to the farm type
 ##'
 ##' @param farms List of farms
-##' @return a matrix with left, right, lat, beta, betaEWP, betaEBAP, cleaning_rate, 
-##'     Dinf, shedRate 
+##' @return a matrix with left, right, lat, beta, betaEWP, betaEBAP,
+##'     cleaning_rate, Dinf, shedRate
 ##' @noRd
 create_ldata <- function(farms) {
     sectors <- c("ges", "fa", "pw", "fi")
@@ -49,17 +49,17 @@ create_ldata <- function(farms) {
             ldata["slaughterhouse", l + offset] <- 1
             offset <- offset + length(l)
         } else {
-            
+
             ## For each sector
             for (j in seq_len(length(sectors))) {
                 sector <- sectors[j]
-                
+
                 ## For each room
                 for (k in seq_len(farm[[paste0("size_", sector, "_sector")]])) {
-                    
+
                     ## List pens
                     l <- seq_len(farm[[paste0("size_", sector, "_room")]])
-                    
+
                     ## If no empty
                     if (length(l) > 0) {
                         ## All pens except the first one have an
