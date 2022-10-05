@@ -1,0 +1,31 @@
+Package: HEVevents
+Type: Package
+Title: Generate Intra and Inter-Herd Events for HEV Transmission Modelling
+Version: 22.10.05
+Authors@R:
+    c(person(given = "Pachka",
+             family = "Hamammi",
+             role = c("aut", "cre"),
+             comment = c(ORCID = "0000-0002-7490-6257")),
+      person(given = "Stefan",
+             family = "Widgren",
+             role = "aut",
+             comment = c(ORCID = "0000-0001-5745-2284")),
+      person(given = "Mathieu",
+             family = "Andraud",
+             role = "aut",
+             comment = c(ORCID = "0000-0003-2891-2901")))
+Description: Generate intra and inter-herd events the 'HEVtrans'
+             package that contains an infectious disease model for
+             Hepatitis E virus (HEV) in pig farms.
+Acknowledgements: This work has received funding from the European
+                  Union's Horizon 2020 Research and Innovation
+                  programme under grant agreement No 773830: One
+                  Health European Joint Programme: BIOPIGEE.
+License: GPL-3
+Encoding: UTF-8
+NeedsCompilation: yes
+Imports: methods
+RoxygenNote: 7.2.1
+Collate:
+    'create_events.R'

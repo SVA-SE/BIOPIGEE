@@ -1,0 +1,53 @@
+Package: HEVtrans
+Type: Package
+Title: HEV Transmission Modelling Intra and Inter-Herds
+Version: 22.10.05
+Authors@R:
+    c(person(given = "Pachka",
+             family = "Hamammi",
+             role = c("aut", "cre"),
+             comment = c(ORCID = "0000-0002-7490-6257")),
+      person(given = "Stefan",
+             family = "Widgren",
+             role = "aut",
+             comment = c(ORCID = "0000-0001-5745-2284")),
+      person(given = "Morgane",
+             family = "Salines",
+             role = "aut",
+             comment = c(ORCID = "0000-0002-6821-4131")),
+      person(given = "Mathieu",
+             family = "Andraud",
+             role = "aut",
+             comment = c(ORCID = "0000-0003-2891-2901")))
+Description: An infectious disease model for Hepatitis E virus (HEV)
+             in pig farms.
+Acknowledgements: This work has received funding from the European
+                  Union's Horizon 2020 Research and Innovation
+                  programme under grant agreement No 773830: One
+                  Health European Joint Programme: BIOPIGEE.
+License: GPL-3
+Encoding: UTF-8
+NeedsCompilation: yes
+Depends: SimInf
+Imports:
+    data.table,
+    methods,
+    magrittr,
+    DiagrammeR,
+    DiagrammeRsvg,
+    rsvg,
+    stringi
+LinkingTo: SimInf
+RoxygenNote: 7.2.1
+Collate:
+    'create_farmslist.R'
+    'create_gdata.R'
+    'create_ldata.R'
+    'create_u0.R'
+    'create_v0.R'
+    'model.R'
+    'network.R'
+    'network_nodes.R'
+    'samplecoinffarms.R'
+    'slaughter_info.R'
+    'specifyBRS.R'
