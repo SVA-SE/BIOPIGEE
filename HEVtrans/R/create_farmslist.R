@@ -68,25 +68,25 @@ create_farmslist <- function(premises,
     ) stop ("gesfromfiprob, fa2pwprob, pw2fiprob and premises2slprob must contain tail, head and p columns")
 
     BRSstructure <- BRS.str$BRS.structure
-    
+
     BRSstructure %>% setDT
-  
+
     p_gesfromfi <- gesfromfiprob
     p_fa2pw <- fa2pwprob
     p_pw2fi <- pw2fiprob
     p_2sl <- premises2slprob
-    
+
     setDT(p_gesfromfi)
     setDT(p_fa2pw)
     setDT(p_pw2fi)
     setDT(p_2sl)
-    
+
     p_gesfromfi %<>% .[tail %in% premises[["siteID"]] & head %in% premises[["siteID"]]]
     p_fa2pw %<>% .[tail %in% premises[["siteID"]] & head %in% premises[["siteID"]]]
     p_pw2fi %<>% .[tail %in% premises[["siteID"]] & head %in% premises[["siteID"]]]
 
     # initialize farm list
-    premises %>% setDT 
+    premises %>% setDT
     npremises <- premises[,.N]
     message(npremises, " premises are being processed")
 
@@ -99,7 +99,7 @@ create_farmslist <- function(premises,
     # For each origin premise,
     # select the destination premises with the highest probability of contact and
     # a cumulative probability explaining of 'ProbContactThreshold' % of contacts.
-    
+
     recalc <- function(x) {
            values <- sum(x)
            x / values
@@ -133,23 +133,23 @@ create_farmslist <- function(premises,
     p_fa2pw[, head := premises[match(head, siteID),"id"]]
     # setnames(p_fa2pw, "p", "topw_prob")
     # setnames(p_fa2pw, "head", "topw_id")
-    
+
     p_pw2fi[, tail := premises[match(tail, siteID),"id"]]
     p_pw2fi[, head := premises[match(head, siteID),"id"]]
     # setnames(p_pw2fi, "p", "tofi_prob")
     # setnames(p_pw2fi, "head", "tofi_id")
-    
+
     p_gesfromfi[, tail := premises[match(tail, siteID),"id"]]
     p_gesfromfi[, head := premises[match(head, siteID),"id"]]
     # setnames(p_gesfromfi, "p", "fromfi_prob")
     # setnames(p_gesfromfi, "tail", "fromfi_id")
-    
+
     p_2sl[, tail := premises[match(tail, siteID),"id"]]
     p_2sl[, head := premises[match(head, siteID),"id"]]
-    
+
       # number of batches
     premises[type != "SL", nbatches := BRSstructure[match(premises[type != "SL", BRS], id.BRS), nbatches]]
-    
+
     premises[type != "SL", `:=`(
       # number individuals in each pen.
       size_ges_pen = ceiling(nbRP/nbatches),
@@ -199,15 +199,15 @@ create_farmslist <- function(premises,
       cleaning_rate_fi  = ifelse(duration_post_fi > 1, cleaning_rates["high"], cleaning_rates["low"])
     )]
 
-    ########################## 
+    ##########################
     ## External biosecurity ##
     ##########################
-    
+
     premises[type != "SL",  NGES := sum(size_ges_pen * size_ges_room * size_ges_sector), by = .(extBioSecLev_ges_sector)]
     premises[type != "SL",  NFA := sum(size_fa_pen * size_fa_room * size_fa_sector), by = .(extBioSecLev_fa_sector)]
     premises[type != "SL",  NPW := sum(size_pw_pen * size_pw_room * size_pw_sector), by = .(extBioSecLev_pw_sector)]
     premises[type != "SL",  NFI := sum(size_fi_pen * size_fi_room * size_fi_sector), by = .(extBioSecLev_fi_sector)]
-    
+
     premises[type != "SL", `:=`(
       # External introduction rates based on levels of external biosecurity
       ext_BioSec_ges_sector = ext_BioSec_frequency[extBioSecLev_ges_sector]/ NGES / (qIng * beta_EWP_ges_sector),
@@ -215,7 +215,7 @@ create_farmslist <- function(premises,
       ext_BioSec_pw_sector = ext_BioSec_frequency[extBioSecLev_pw_sector]/ NPW / (qIng * beta_EWP_ges_sector),
       ext_BioSec_fi_sector = ext_BioSec_frequency[extBioSecLev_fi_sector]/ NFI / (qIng * beta_EWP_ges_sector)
     )]
-    
+
     setkey(premises, "id")
     setkey(p_fa2pw, "tail")
     setkey(p_pw2fi, "tail")
@@ -231,9 +231,9 @@ create_farmslist <- function(premises,
     # initialize farm list
     empty_list <- split(premises, by="id", keep.by=TRUE)
 
-    
+
     # fill farm list with basic features
-    if(withnames){ 
+    if(withnames){
       farmlist <- lapply(empty_list, function(x){
 
       # probs <- x[, c("topw_id", "topw_prob", "tofi_id", "tofi_prob", "fromfi_id", "fromfi_prob", "tosl_id", "tosl_prob")]
@@ -257,7 +257,7 @@ create_farmslist <- function(premises,
           farm_id =x$id,
           farm_type = x$type %>% as.character
         )
-        
+
         # class for SimInf nice printing
         class(farm) <- "slaughterhouse"
         }
@@ -344,16 +344,16 @@ create_farmslist <- function(premises,
           tosl_id = p_2sl[tail==x$id,head],
           tosl_prob = p_2sl[tail==x$id,p]
         )
-      
+
       # class for SimInf nice printing
       class(farm) <- "farm"}
-      
+
       farm
-      
+
     } )
       }else{
       farmlist <- lapply(empty_list, function(x){
-        
+
         # probs <- x[, c("topw_id", "topw_prob", "tofi_id", "tofi_prob", "fromfi_id", "fromfi_prob", "tosl_id", "tosl_prob")]
         # x[, `:=`(
         #   topw_id = NULL,
@@ -364,10 +364,10 @@ create_farmslist <- function(premises,
         #   fromfi_prob = NULL,
         #   tosl_id = NULL,
         #   tosl_prob = NULL)]
-        
+
         x %<>% unique
-        
-        
+
+
         # If Slautherhouse
         if(x$type == "SL"){
           farm <- list(
@@ -375,11 +375,11 @@ create_farmslist <- function(premises,
             farm_id =x$id,
             farm_type = x$type %>% as.character
           )
-          
+
           # class for SimInf nice printing
           class(farm) <- "slaughterhouse"
         }
-        
+
         # If Farm
         if(x$type  != "SL"){
           farm <- list(
@@ -462,15 +462,15 @@ create_farmslist <- function(premises,
             tosl_id = p_2sl[tail==x$id,head],
             tosl_prob = p_2sl[tail==x$id,p]
           )
-          
+
           # class for SimInf nice printing
           class(farm) <- "farm"}
-        
+
         farm
       })
       }
-    
-    
+
+
     cat("##############\n",
         farmlist %>% lapply(., function(x) x$farm_type == "SL") %>% unlist %>% sum, " slaughterhouse(s), ",
         farmlist %>% lapply(., function(x) x$farm_type != "SL") %>% unlist %>% sum, " farm(s) \n \n",
